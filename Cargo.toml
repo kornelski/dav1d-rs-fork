@@ -1,19 +1,19 @@
 [package]
+name = "libdav1d"
 authors = ["Luca Barbato <lu_zero@gentoo.org>"]
-description = "libdav1d bindings"
+description = "libdav1d bindings, with libdav1d-sys"
 edition = "2021"
-keywords = ["dav1d-rs","av1"]
+keywords = ["dav1d-rs", "av1"]
 license = "MIT"
-name = "dav1d"
+homepage = "https://lib.rs/crates/libdav1d"
+documentation = "https://github.com/rust-av/dav1d-rs"
 readme = "README.md"
-repository = "https://github.com/rust-av/dav1d-rs"
+repository = "https://github.com/kornelski/dav1d-rs-fork"
 version = "0.10.1"
 
 [dependencies]
 bitflags = "2"
-dav1d-sys = { version = "0.8.1", path = "dav1d-sys" }
-
-[features]
+dav1d-sys = { version = "0.5.3-alpha.1", package = "libdav1d-sys" }
 
 [workspace]
-members = ["dav1d-sys", "tools"]
+exclude = ["dav1d-sys", "tools"]

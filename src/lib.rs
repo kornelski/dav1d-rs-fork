@@ -1,4 +1,6 @@
 use dav1d_sys::*;
+use dav1d_sys::Dav1dInloopFilterType::*;
+use dav1d_sys::Dav1dPixelLayout::*;
 
 use std::ffi::c_void;
 use std::fmt;
@@ -182,9 +184,9 @@ impl Settings {
 bitflags::bitflags! {
     #[derive(Copy, Clone, Debug, PartialEq, Eq, Default)]
     pub struct InloopFilterType: u32 {
-        const DEBLOCK = DAV1D_INLOOPFILTER_DEBLOCK;
-        const CDEF = DAV1D_INLOOPFILTER_CDEF;
-        const RESTORATION = DAV1D_INLOOPFILTER_RESTORATION;
+        const DEBLOCK = DAV1D_INLOOPFILTER_DEBLOCK as u32;
+        const CDEF = DAV1D_INLOOPFILTER_CDEF as u32;
+        const RESTORATION = DAV1D_INLOOPFILTER_RESTORATION as u32;
     }
 }
 
@@ -609,6 +611,7 @@ impl Picture {
             DAV1D_PIXEL_LAYOUT_I420 => PixelLayout::I420,
             DAV1D_PIXEL_LAYOUT_I422 => PixelLayout::I422,
             DAV1D_PIXEL_LAYOUT_I444 => PixelLayout::I444,
+            #[allow(unreachable_patterns)]
             _ => unreachable!(),
         }
     }
