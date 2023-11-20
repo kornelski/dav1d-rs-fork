@@ -172,11 +172,17 @@ impl Settings {
     }
 
     pub fn set_decode_frame_type(&mut self, decode_frame_type: DecodeFrameType) {
-        self.dav1d_settings.decode_frame_type = decode_frame_type.into();
+        use dav1d_sys::Dav1dDecodeFrameType::*;
+        self.dav1d_settings.decode_frame_type = match decode_frame_type {
+            DecodeFrameType::All => DAV1D_DECODEFRAMETYPE_ALL,
+            DecodeFrameType::Reference => DAV1D_DECODEFRAMETYPE_REFERENCE,
+            DecodeFrameType::Intra => DAV1D_DECODEFRAMETYPE_INTRA,
+            DecodeFrameType::Key => DAV1D_DECODEFRAMETYPE_KEY,
+        }
     }
 
     pub fn get_decode_frame_type(&self) -> DecodeFrameType {
-        DecodeFrameType::try_from(self.dav1d_settings.decode_frame_type)
+        DecodeFrameType::try_from(self.dav1d_settings.decode_frame_type as u32)
             .expect("Invalid Dav1dDecodeFrameType")
     }
 }
@@ -208,11 +214,12 @@ impl TryFrom<u32> for DecodeFrameType {
     type Error = TryFromEnumError;
 
     fn try_from(value: u32) -> Result<Self, Self::Error> {
+        use dav1d_sys::Dav1dDecodeFrameType::*;
         match value {
-            DAV1D_DECODEFRAMETYPE_ALL => Ok(DecodeFrameType::All),
-            DAV1D_DECODEFRAMETYPE_REFERENCE => Ok(DecodeFrameType::Reference),
-            DAV1D_DECODEFRAMETYPE_INTRA => Ok(DecodeFrameType::Intra),
-            DAV1D_DECODEFRAMETYPE_KEY => Ok(DecodeFrameType::Key),
+            x if x == DAV1D_DECODEFRAMETYPE_ALL as _ => Ok(DecodeFrameType::All),
+            x if x == DAV1D_DECODEFRAMETYPE_REFERENCE as _ => Ok(DecodeFrameType::Reference),
+            x if x == DAV1D_DECODEFRAMETYPE_INTRA as _ => Ok(DecodeFrameType::Intra),
+            x if x == DAV1D_DECODEFRAMETYPE_KEY as _ => Ok(DecodeFrameType::Key),
             _ => Err(TryFromEnumError(())),
         }
     }
@@ -220,11 +227,12 @@ impl TryFrom<u32> for DecodeFrameType {
 
 impl From<DecodeFrameType> for u32 {
     fn from(v: DecodeFrameType) -> u32 {
+        use dav1d_sys::Dav1dDecodeFrameType::*;
         match v {
-            DecodeFrameType::All => DAV1D_DECODEFRAMETYPE_ALL,
-            DecodeFrameType::Reference => DAV1D_DECODEFRAMETYPE_REFERENCE,
-            DecodeFrameType::Intra => DAV1D_DECODEFRAMETYPE_INTRA,
-            DecodeFrameType::Key => DAV1D_DECODEFRAMETYPE_KEY,
+            DecodeFrameType::All => DAV1D_DECODEFRAMETYPE_ALL as _,
+            DecodeFrameType::Reference => DAV1D_DECODEFRAMETYPE_REFERENCE as _,
+            DecodeFrameType::Intra => DAV1D_DECODEFRAMETYPE_INTRA as _,
+            DecodeFrameType::Key => DAV1D_DECODEFRAMETYPE_KEY as _,
         }
     }
 }
@@ -427,7 +435,7 @@ impl Decoder {
 
     /// Get the decoder delay.
     pub fn get_frame_delay(&self) -> u32 {
-        unsafe { dav1d_get_frame_delay(self.dec.as_ptr()) as u32 }
+        unsafe { dav1d_get_frame_delay(self.dec.as_ptr() as *const _) as u32 }
     }
 }
 
