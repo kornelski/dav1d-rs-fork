@@ -9,11 +9,14 @@ homepage = "https://lib.rs/crates/libdav1d"
 documentation = "https://github.com/rust-av/dav1d-rs"
 readme = "README.md"
 repository = "https://github.com/kornelski/dav1d-rs-fork"
-version = "0.10.1"
+version = "0.10.2"
 
 [dependencies]
 bitflags = "2"
-dav1d-sys = { version = "0.6", package = "libdav1d-sys" }
+dav1d-sys = { version = "0.7", package = "libdav1d-sys", default-features = false }
+
+[features]
+bindgen = ["dav1d-sys/generate"]
 
 [workspace]
 exclude = ["dav1d-sys", "tools"]
